@@ -1,12 +1,27 @@
 from django.db import models
+from django.utils.text import slugify
 
 from apps.core.models import BaseModel
 
 
 class Institution(BaseModel):
     """
-    Iglesia, Seminario, Instituto Bíblico o Universidad.
+    Representa una Iglesia, Seminario,
+    Instituto Bíblico o Universidad.
     """
+
+    TYPES = (
+        ("church", "Iglesia"),
+        ("seminary", "Seminario"),
+        ("institute", "Instituto Bíblico"),
+        ("university", "Universidad"),
+    )
+
+    type = models.CharField(
+        max_length=20,
+        choices=TYPES,
+        default="church",
+    )
 
     name = models.CharField(
         max_length=255,
@@ -20,6 +35,7 @@ class Institution(BaseModel):
 
     slug = models.SlugField(
         unique=True,
+        blank=True,
     )
 
     email = models.EmailField(
@@ -60,10 +76,20 @@ class Institution(BaseModel):
         null=True,
     )
 
+    is_active = models.BooleanField(
+        default=True,
+    )
+
     class Meta:
         verbose_name = "Institución"
         verbose_name_plural = "Instituciones"
         ordering = ["name"]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

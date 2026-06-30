@@ -1,12 +1,28 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
+    SpectacularRedocView,
 )
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+
+    # ==========================================================================
+    # ADMIN
+    # ==========================================================================
+
+    path(
+        "admin/",
+        admin.site.urls,
+    ),
+
+    # ==========================================================================
+    # API SCHEMA
+    # ==========================================================================
 
     path(
         "api/schema/",
@@ -14,19 +30,52 @@ urlpatterns = [
         name="schema",
     ),
 
+    # ==========================================================================
+    # SWAGGER
+    # ==========================================================================
+
     path(
         "api/docs/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
+        SpectacularSwaggerView.as_view(
+            url_name="schema"
+        ),
         name="swagger-ui",
     ),
+
+    # ==========================================================================
+    # REDOC
+    # ==========================================================================
+
+    path(
+        "api/redoc/",
+        SpectacularRedocView.as_view(
+            url_name="schema"
+        ),
+        name="redoc",
+    ),
+
+    # ==========================================================================
+    # USERS
+    # ==========================================================================
 
     path(
         "api/users/",
         include("apps.users.urls"),
     ),
 
+    # ==========================================================================
+    # INSTITUTIONS
+    # ==========================================================================
+
     path(
-        "api/institutions/",
+        "api/",
         include("apps.institutions.urls"),
     ),
+
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT,
+    )
