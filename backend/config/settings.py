@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     "apps.programs",
     "apps.courses",
     "apps.modules",
+    "apps.lessons",
     "apps.assessments",
 
     # --------------------------------------------------------------------------

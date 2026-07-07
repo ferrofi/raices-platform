@@ -99,6 +99,15 @@ urlpatterns = [
         include("apps.modules.urls"),
     ),
 
+    # ==========================================================================
+    # LESSONS
+    # ==========================================================================
+
+    path(
+        "api/lessons/",
+        include("apps.lessons.urls"),
+    ),
+
 ]
 
 if settings.DEBUG:
