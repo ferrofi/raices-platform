@@ -3,20 +3,15 @@ from django.db import models
 from apps.core.models import BaseModel
 
 
-class Course(BaseModel):
+class Module(BaseModel):
     """
-    Curso perteneciente a un Programa Académico.
+    Módulo perteneciente a un Curso.
     """
 
-    class CourseLevel(models.TextChoices):
-        BASICO = "BASICO", "Básico"
-        INTERMEDIO = "INTERMEDIO", "Intermedio"
-        AVANZADO = "AVANZADO", "Avanzado"
-
-    program = models.ForeignKey(
-        "programs.Program",
+    course = models.ForeignKey(
+        "courses.Course",
         on_delete=models.CASCADE,
-        related_name="courses",
+        related_name="modules",
     )
 
     code = models.CharField(
@@ -42,7 +37,7 @@ class Course(BaseModel):
     )
 
     image = models.ImageField(
-        upload_to="courses/images/",
+        upload_to="modules/images/",
         blank=True,
         null=True,
     )
@@ -55,24 +50,15 @@ class Course(BaseModel):
         default=0,
     )
 
-    level = models.CharField(
-        max_length=20,
-        choices=CourseLevel.choices,
-        default=CourseLevel.BASICO,
-    )
-
-    is_free = models.BooleanField(
-        default=False,
-    )
-
     is_published = models.BooleanField(
         default=False,
     )
 
     class Meta:
-        verbose_name = "Curso"
-        verbose_name_plural = "Cursos"
+        verbose_name = "Módulo"
+        verbose_name_plural = "Módulos"
         ordering = [
+            "course",
             "order",
             "name",
         ]

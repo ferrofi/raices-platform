@@ -1,31 +1,31 @@
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 
-from .serializers import CourseSerializer
-from .selectors import get_courses
-from .services import create_course
+from .serializers import ModuleSerializer
+from .selectors import get_modules
+from .services import create_module
 
 
-class CourseViewSet(viewsets.ModelViewSet):
+class ModuleViewSet(viewsets.ModelViewSet):
     """
-    API para la administración de Cursos.
+    API para la administración de Módulos.
     """
 
-    serializer_class = CourseSerializer
+    serializer_class = ModuleSerializer
 
     def get_queryset(self):
-        return get_courses()
+        return get_modules()
 
     def create(self, request, *args, **kwargs):
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        course = create_course(
+        module = create_module(
             **serializer.validated_data
         )
 
-        output = self.get_serializer(course)
+        output = self.get_serializer(module)
 
         return Response(
             output.data,

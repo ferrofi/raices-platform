@@ -1,26 +1,22 @@
 from django.contrib import admin
 
-from .models import Course
+from .models import Module
 
 
-@admin.register(Course)
-class CourseAdmin(admin.ModelAdmin):
+@admin.register(Module)
+class ModuleAdmin(admin.ModelAdmin):
 
     list_display = (
         "code",
         "name",
-        "program",
+        "course",
         "order",
-        "level",
-        "is_free",
         "is_published",
         "is_active",
     )
 
     list_filter = (
-        "program",
-        "level",
-        "is_free",
+        "course",
         "is_published",
         "is_active",
     )
@@ -31,7 +27,7 @@ class CourseAdmin(admin.ModelAdmin):
     )
 
     ordering = (
-        "program",
+        "course",
         "order",
     )
 
