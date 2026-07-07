@@ -72,6 +72,15 @@ urlpatterns = [
         include("apps.institutions.urls"),
     ),
 
+    # ==========================================================================
+    # PROGRAMS
+    # ==========================================================================
+
+    path(
+        "api/programs/",
+        include("apps.programs.urls"),
+    ),
+
 ]
 
 if settings.DEBUG:
