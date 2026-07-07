@@ -108,6 +108,15 @@ urlpatterns = [
         include("apps.lessons.urls"),
     ),
 
+    # ==========================================================================
+    # RESOURCES
+    # ==========================================================================
+
+    path(
+        "api/resources/",
+        include("apps.resources.urls"),
+    ),
+
 ]
 
 if settings.DEBUG:

@@ -87,6 +87,7 @@ INSTALLED_APPS = [
     # CONTENIDO
     # --------------------------------------------------------------------------
 
+    "apps.resources",
     "apps.library",
     "apps.devotionals",
 
