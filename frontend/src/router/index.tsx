@@ -6,24 +6,40 @@ import Dashboard from "../pages/Dashboard";
 import Institutions from "../pages/Institutions";
 import Programs from "../pages/Programs";
 import Courses from "../pages/Courses";
+import Login from "../pages/Login";
+
+import ProtectedRoute from "../auth/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
+    path: "/login",
+    element: <Login />,
+  },
+
+  {
     path: "/",
-    element: <DashboardLayout />,
+    element: (
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
+
     children: [
       {
         index: true,
         element: <Dashboard />,
       },
+
       {
         path: "institutions",
         element: <Institutions />,
       },
+
       {
         path: "programs",
         element: <Programs />,
       },
+
       {
         path: "courses",
         element: <Courses />,

@@ -6,9 +6,12 @@ import "./index.css";
 import "./styles/dashboard.css";
 
 import { router } from "./router";
+import { AuthProvider } from "./auth/AuthContext";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>
 );
