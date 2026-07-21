@@ -5,8 +5,8 @@ from django.urls import include, path
 
 from drf_spectacular.views import (
     SpectacularAPIView,
-    SpectacularSwaggerView,
     SpectacularRedocView,
+    SpectacularSwaggerView,
 )
 
 urlpatterns = [
@@ -37,7 +37,7 @@ urlpatterns = [
     path(
         "api/docs/",
         SpectacularSwaggerView.as_view(
-            url_name="schema"
+            url_name="schema",
         ),
         name="swagger-ui",
     ),
@@ -49,9 +49,18 @@ urlpatterns = [
     path(
         "api/redoc/",
         SpectacularRedocView.as_view(
-            url_name="schema"
+            url_name="schema",
         ),
         name="redoc",
+    ),
+
+    # ==========================================================================
+    # AUTHENTICATION
+    # ==========================================================================
+
+    path(
+        "api/auth/",
+        include("apps.users.auth_urls"),
     ),
 
     # ==========================================================================
@@ -116,7 +125,6 @@ urlpatterns = [
         "api/resources/",
         include("apps.resources.urls"),
     ),
-
 ]
 
 if settings.DEBUG:

@@ -4,18 +4,27 @@ import SearchBar from "../components/common/SearchBar";
 import PageHeader from "../components/common/PageHeader";
 import PrimaryButton from "../components/common/PrimaryButton";
 import DataTable from "../components/common/DataTable";
+import ConfirmDialog from "../components/common/ConfirmDialog";
+import Modal from "../components/common/Modal";
+import EntityForm from "../components/common/EntityForm";
+import FormInput from "../components/common/FormInput";
 
-import {
-  InstitutionService,
-} from "../services/institutionService";
-
-import type {
-  Institution,
-} from "../services/institutionService";
+import { InstitutionService } from "../services/institutionService";
+import type { Institution } from "../services/institutionService";
 
 export default function Institutions() {
   const [institutions, setInstitutions] = useState<Institution[]>([]);
   const [search, setSearch] = useState("");
+
+  const [selectedInstitution, setSelectedInstitution] =
+    useState<Institution | null>(null);
+
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [openForm, setOpenForm] = useState(false);
+
+  const [name, setName] = useState("");
+  const [shortName, setShortName] = useState("");
+  const [city, setCity] = useState("");
 
   async function loadInstitutions() {
     try {
@@ -42,6 +51,21 @@ export default function Institutions() {
     });
   }, [institutions, search]);
 
+  async function handleDelete() {
+    if (!selectedInstitution?.id) return;
+
+    try {
+      await InstitutionService.delete(selectedInstitution.id);
+
+      await loadInstitutions();
+
+      setDeleteDialog(false);
+      setSelectedInstitution(null);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const columns = [
     { key: "name", label: "Institución" },
     { key: "short_name", label: "Nombre Corto" },
@@ -62,7 +86,17 @@ export default function Institutions() {
         title="Instituciones"
         subtitle="Administración de Instituciones"
         action={
-          <PrimaryButton>
+          <PrimaryButton
+            onClick={() => {
+              setSelectedInstitution(null);
+
+              setName("");
+              setShortName("");
+              setCity("");
+
+              setOpenForm(true);
+            }}
+          >
             + Nueva Institución
           </PrimaryButton>
         }
@@ -79,6 +113,98 @@ export default function Institutions() {
       <DataTable
         columns={columns}
         data={data}
+        onEdit={(institution) => {
+          setSelectedInstitution(institution);
+
+          setName(institution.name);
+          setShortName(institution.short_name);
+          setCity(institution.city);
+
+          setOpenForm(true);
+        }}
+        onDelete={(institution) => {
+          setSelectedInstitution(institution);
+          setDeleteDialog(true);
+        }}
+      />
+
+      <Modal
+        open={openForm}
+        title={
+          selectedInstitution
+            ? "Editar Institución"
+            : "Nueva Institución"
+        }
+        onClose={() => {
+          setOpenForm(false);
+          setSelectedInstitution(null);
+
+          setName("");
+          setShortName("");
+          setCity("");
+        }}
+      >
+        <EntityForm
+          title="Información General"
+          onSubmit={(e) => {
+            e.preventDefault();
+
+            console.log({
+              name,
+              shortName,
+              city,
+            });
+          }}
+          actions={
+            <>
+              <PrimaryButton
+                onClick={() => {
+                  setOpenForm(false);
+                  setSelectedInstitution(null);
+
+                  setName("");
+                  setShortName("");
+                  setCity("");
+                }}
+              >
+                Cancelar
+              </PrimaryButton>
+
+              <PrimaryButton type="submit">
+                Guardar
+              </PrimaryButton>
+            </>
+          }
+        >
+          <FormInput
+            label="Nombre"
+            value={name}
+            onChange={setName}
+          />
+
+          <FormInput
+            label="Nombre Corto"
+            value={shortName}
+            onChange={setShortName}
+          />
+
+          <FormInput
+            label="Ciudad"
+            value={city}
+            onChange={setCity}
+          />
+        </EntityForm>
+      </Modal>
+
+      <ConfirmDialog
+        open={deleteDialog}
+        title="Eliminar Institución"
+        message={`¿Desea eliminar "${selectedInstitution?.name}"?`}
+        onConfirm={handleDelete}
+        onCancel={() => {
+          setDeleteDialog(false);
+          setSelectedInstitution(null);
+        }}
       />
     </>
   );

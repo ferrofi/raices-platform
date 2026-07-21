@@ -3,7 +3,9 @@ Django settings for RAICES Platform.
 """
 
 from pathlib import Path
+from datetime import timedelta
 import os
+
 from dotenv import load_dotenv
 
 # ==============================================================================
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     # --------------------------------------------------------------------------
 
     "rest_framework",
+    "rest_framework_simplejwt",
     "drf_spectacular",
     "corsheaders",
 
@@ -249,16 +252,48 @@ CORS_ALLOW_ALL_ORIGINS = True
 # ==============================================================================
 
 REST_FRAMEWORK = {
+
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",
-    ],
-    "DEFAULT_AUTHENTICATION_CLASSES": [
+
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+
         "rest_framework.authentication.SessionAuthentication",
-    ],
-    "EXCEPTION_HANDLER": "apps.core.exceptions.custom_exception_handler",
+
+    ),
+
+    "DEFAULT_PERMISSION_CLASSES": (
+
+        "rest_framework.permissions.AllowAny",
+
+    ),
+
     "DEFAULT_PAGINATION_CLASS": "apps.core.pagination.StandardPagination",
+
     "PAGE_SIZE": 10,
+
+    "EXCEPTION_HANDLER": "apps.core.exceptions.custom_exception_handler",
+}
+
+# ==============================================================================
+# SIMPLE JWT
+# ==============================================================================
+
+SIMPLE_JWT = {
+
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+
+    "ROTATE_REFRESH_TOKENS": True,
+
+    "BLACKLIST_AFTER_ROTATION": False,
+
+    "UPDATE_LAST_LOGIN": True,
+
+    "AUTH_HEADER_TYPES": ("Bearer",),
+
 }
 
 # ==============================================================================
@@ -266,10 +301,15 @@ REST_FRAMEWORK = {
 # ==============================================================================
 
 SPECTACULAR_SETTINGS = {
+
     "TITLE": "RAICES API",
+
     "DESCRIPTION": "API Plataforma Integral para la Formación Bíblica",
+
     "VERSION": "1.0.0",
+
     "SERVE_INCLUDE_SCHEMA": False,
+
 }
 
 # ==============================================================================

@@ -4,11 +4,13 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from apps.core.models import BaseModel
+from .managers import UserManager
 
 
 class User(BaseModel, AbstractUser):
     """
-    Usuario principal de RAÍCES.
+    Usuario principal de la plataforma RAÍCES.
+    La autenticación se realiza mediante correo electrónico.
     """
 
     id = models.UUIDField(
@@ -46,22 +48,38 @@ class User(BaseModel, AbstractUser):
         null=True,
     )
 
+    # -------------------------------------------------------------------------
+    # Configuración de autenticación
+    # -------------------------------------------------------------------------
+
     USERNAME_FIELD = "email"
 
     REQUIRED_FIELDS = [
         "username",
     ]
 
+    objects = UserManager()
+
+    # -------------------------------------------------------------------------
+    # Meta
+    # -------------------------------------------------------------------------
+
     class Meta:
         verbose_name = "Usuario"
         verbose_name_plural = "Usuarios"
+        ordering = ["email"]
+
+    # -------------------------------------------------------------------------
+    # Representación
+    # -------------------------------------------------------------------------
 
     def __str__(self):
         return self.email
-    
+
+
 class Role(BaseModel):
     """
-    Roles de negocio de la plataforma RAÍCES.
+    Catálogo de roles funcionales de la plataforma.
     """
 
     code = models.CharField(
@@ -88,8 +106,8 @@ class Role(BaseModel):
 
 class UserRole(BaseModel):
     """
-    Relación entre usuarios y roles.
-    Permite que un usuario tenga uno o varios roles.
+    Relación muchos a muchos entre usuarios y roles.
+    Un usuario puede tener múltiples roles dentro de la plataforma.
     """
 
     user = models.ForeignKey(
@@ -111,6 +129,7 @@ class UserRole(BaseModel):
             "user",
             "role",
         )
+        ordering = ["user", "role"]
 
     def __str__(self):
         return f"{self.user.email} - {self.role.name}"
